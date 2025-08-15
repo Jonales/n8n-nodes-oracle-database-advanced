@@ -22,8 +22,8 @@ export class OracleConnection implements DatabaseConnection {
     async getConnection(): Promise<Connection> {
         try {
             return await oracledb.getConnection(this.databaseConfig);
-        } catch (error) {
-            throw new Error(`Failed to connect to Oracle Database: ${error.message}`);
+        } catch (error: unknown) {
+            throw new Error(`Failed to connect to Oracle Database: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 }
