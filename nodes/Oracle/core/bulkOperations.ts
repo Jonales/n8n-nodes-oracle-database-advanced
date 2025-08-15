@@ -104,7 +104,7 @@ export class BulkOperations {
                         errors.push({
                             batchIndex: batchCount - 1,
                             rowIndex: i + batchError.offset,
-                            error: batchError.error.message,
+                            error: batchError.error instanceof Error ? error.message : String(error),
                             data: batch[batchError.offset]
                         });
                         totalErrors++;
@@ -120,17 +120,17 @@ export class BulkOperations {
 
                 console.log(`Lote ${batchCount} processado: ${batch.length} registros`);
 
-            } catch (error) {
+            } catch (error: unknown) {
                 if (continueOnError) {
                     errors.push({
                         batchIndex: batchCount - 1,
                         rowIndex: i,
-                        error: error.message,
+                        error: error instanceof Error ? error.message : String(error),
                         data: batch
                     });
                     totalErrors += batch.length;
                 } else {
-                    throw new Error(`Erro no lote ${batchCount}: ${error.message}`);
+                    throw new Error(`Erro no lote ${batchCount}: ${error instanceof Error ? error.message : String(error)}`);
                 }
             }
         }
@@ -218,7 +218,7 @@ export class BulkOperations {
                         errors.push({
                             batchIndex: batchCount - 1,
                             rowIndex: i + batchError.offset,
-                            error: batchError.error.message,
+                            error: batchError.error instanceof Error ? error.message : String(error),
                             data: batch[batchError.offset]
                         });
                         totalErrors++;
@@ -233,17 +233,17 @@ export class BulkOperations {
 
                 console.log(`Lote ${batchCount} atualizado: ${batch.length} registros`);
 
-            } catch (error) {
+            } catch (error: unknown) {
                 if (continueOnError) {
                     errors.push({
                         batchIndex: batchCount - 1,
                         rowIndex: i,
-                        error: error.message,
+                        error: error instanceof Error ? error.message : String(error),
                         data: batch
                     });
                     totalErrors += batch.length;
                 } else {
-                    throw new Error(`Erro no lote ${batchCount}: ${error.message}`);
+                    throw new Error(`Erro no lote ${batchCount}: ${error instanceof Error ? error.message : String(error)}`);
                 }
             }
         }
@@ -319,7 +319,7 @@ export class BulkOperations {
                         errors.push({
                             batchIndex: batchCount - 1,
                             rowIndex: i + batchError.offset,
-                            error: batchError.error.message,
+                            error: batchError.error instanceof Error ? error.message : String(error),
                             data: batch[batchError.offset]
                         });
                         totalErrors++;
@@ -334,17 +334,17 @@ export class BulkOperations {
 
                 console.log(`Lote ${batchCount} excluído: ${batch.length} registros`);
 
-            } catch (error) {
+            } catch (error: unknown) {
                 if (continueOnError) {
                     errors.push({
                         batchIndex: batchCount - 1,
                         rowIndex: i,
-                        error: error.message,
+                        error: error instanceof Error ? error.message : String(error),
                         data: batch
                     });
                     totalErrors += batch.length;
                 } else {
-                    throw new Error(`Erro no lote ${batchCount}: ${error.message}`);
+                    throw new Error(`Erro no lote ${batchCount}: ${error instanceof Error ? error.message : String(error)}`);
                 }
             }
         }
@@ -421,8 +421,8 @@ export class BulkOperations {
                 errors: []
             };
 
-        } catch (error) {
-            throw new Error(`Erro no bulk upsert: ${error.message}`);
+        } catch (error: unknown) {
+            throw new Error(`Erro no bulk upsert: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 
