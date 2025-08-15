@@ -59,8 +59,9 @@ export class TransactionManager {
             this.retryCount = 0;
 
             console.log(`Transação iniciada às ${this.transactionStartTime.toISOString()}`);
-        } catch (error) {
-            throw new Error(`Falha ao iniciar transação: ${error.message}`);
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            throw new Error(`Falha ao iniciar transação: ${errorMessage}`);
         }
     }
 
@@ -93,8 +94,9 @@ export class TransactionManager {
 
             this.savepoints.push(savepointInfo);
             console.log(`Savepoint '${name}' criado às ${savepointInfo.timestamp.toISOString()}`);
-        } catch (error) {
-            throw new Error(`Falha ao criar savepoint '${name}': ${error.message}`);
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            throw new Error(`Falha ao criar savepoint '${name}': ${errorMessage}`);
         }
     }
 
@@ -119,8 +121,9 @@ export class TransactionManager {
             this.savepoints = this.savepoints.slice(0, savepointIndex + 1);
             
             console.log(`Rollback executado para savepoint '${name}'`);
-        } catch (error) {
-            throw new Error(`Falha no rollback para savepoint '${name}': ${error.message}`);
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            throw new Error(`Falha no rollback para savepoint '${name}': ${errorMessage}`);
         }
     }
 
@@ -141,8 +144,9 @@ export class TransactionManager {
             // Oracle não tem comando RELEASE SAVEPOINT, mas podemos removê-lo da lista
             this.savepoints.splice(savepointIndex, 1);
             console.log(`Savepoint '${name}' removido`);
-        } catch (error) {
-            throw new Error(`Falha ao remover savepoint '${name}': ${error.message}`);
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            throw new Error(`Falha ao remover savepoint '${name}': ${errorMessage}`);
         }
     }
 
@@ -160,11 +164,12 @@ export class TransactionManager {
             
             const duration = this.getTransactionDuration();
             console.log(`Transação commitada com sucesso. Duração: ${duration}ms`);
-        } catch (error) {
+        } catch (error: unknown) {
             if (this.options.autoRollbackOnError) {
                 await this.rollback();
             }
-            throw new Error(`Falha no commit: ${error.message}`);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            throw new Error(`Falha no commit: ${errorMessage}`);
         }
     }
 
@@ -182,9 +187,10 @@ export class TransactionManager {
             
             const duration = this.getTransactionDuration();
             console.log(`Transação revertida. Duração: ${duration}ms`);
-        } catch (error) {
+        } catch (error: unknown) {
             this.cleanupTransaction(); // Limpar mesmo com erro
-            throw new Error(`Falha no rollback: ${error.message}`);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            throw new Error(`Falha no rollback: ${errorMessage}`);
         }
     }
 
@@ -195,12 +201,12 @@ export class TransactionManager {
         operation: () => Promise<T>,
         operationName: string = 'operação'
     ): Promise<T> {
-        let lastError: Error;
+        let lastError: Error | unknown;
 
         for (let attempt = 1; attempt <= (this.options.maxRetries || 3); attempt++) {
             try {
                 return await operation();
-            } catch (error) {
+            } catch (error: unknown) {
                 lastError = error;
                 
                 // Verificar se é um erro que vale a pena retry
@@ -209,7 +215,9 @@ export class TransactionManager {
                 }
 
                 if (attempt < (this.options.maxRetries || 3)) {
+                    const errorMessage = error instanceof Error ? error.message : String(error);
                     console.log(`${operationName} falhou (tentativa ${attempt}). Tentando novamente em ${this.options.retryDelay}ms...`);
+                    console.log(`Erro: ${errorMessage}`);
                     await this.sleep(this.options.retryDelay || 1000);
                     this.retryCount++;
                 } else {
@@ -218,7 +226,11 @@ export class TransactionManager {
             }
         }
 
-        throw lastError!;
+        if (lastError instanceof Error) {
+            throw lastError;
+        } else {
+            throw new Error(String(lastError));
+        }
     }
 
     /**
@@ -259,12 +271,13 @@ export class TransactionManager {
                     rowsAffected: result.rowsAffected
                 });
 
-            } catch (error) {
+            } catch (error: unknown) {
+                const errorMessage = error instanceof Error ? error.message : String(error);
                 const errorResult = {
                     index: i,
                     name: operationName,
                     success: false,
-                    error: error.message
+                    error: errorMessage
                 };
 
                 results.push(errorResult);
@@ -275,7 +288,7 @@ export class TransactionManager {
                         const lastSavepoint = this.savepoints[this.savepoints.length - 1];
                         await this.rollbackToSavepoint(lastSavepoint.name);
                     }
-                    throw new Error(`Operação '${operationName}' falhou: ${error.message}`);
+                    throw new Error(`Operação '${operationName}' falhou: ${errorMessage}`);
                 }
             }
         }
@@ -339,7 +352,9 @@ export class TransactionManager {
     /**
      * Verificar se erro é passível de retry
      */
-    private isRetryableError(error: any): boolean {
+    private isRetryableError(error: unknown): boolean {
+        if (!(error instanceof Error)) return false;
+        
         const retryableErrors = [
             'ORA-00060', // Deadlock
             'ORA-08177', // Serialization failure
