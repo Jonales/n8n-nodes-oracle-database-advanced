@@ -60,7 +60,7 @@ export class TransactionManager {
 
             console.log(`Transação iniciada às ${this.transactionStartTime.toISOString()}`);
         } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
+            const errorMessage = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error);
             throw new Error(`Falha ao iniciar transação: ${errorMessage}`);
         }
     }
@@ -95,7 +95,7 @@ export class TransactionManager {
             this.savepoints.push(savepointInfo);
             console.log(`Savepoint '${name}' criado às ${savepointInfo.timestamp.toISOString()}`);
         } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
+            const errorMessage = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error);
             throw new Error(`Falha ao criar savepoint '${name}': ${errorMessage}`);
         }
     }
@@ -122,7 +122,7 @@ export class TransactionManager {
             
             console.log(`Rollback executado para savepoint '${name}'`);
         } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
+            const errorMessage = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error);
             throw new Error(`Falha no rollback para savepoint '${name}': ${errorMessage}`);
         }
     }
@@ -145,7 +145,7 @@ export class TransactionManager {
             this.savepoints.splice(savepointIndex, 1);
             console.log(`Savepoint '${name}' removido`);
         } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
+            const errorMessage = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error);
             throw new Error(`Falha ao remover savepoint '${name}': ${errorMessage}`);
         }
     }
@@ -168,7 +168,7 @@ export class TransactionManager {
             if (this.options.autoRollbackOnError) {
                 await this.rollback();
             }
-            const errorMessage = error instanceof Error ? error.message : String(error);
+            const errorMessage = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error);
             throw new Error(`Falha no commit: ${errorMessage}`);
         }
     }
@@ -189,7 +189,7 @@ export class TransactionManager {
             console.log(`Transação revertida. Duração: ${duration}ms`);
         } catch (error: unknown) {
             this.cleanupTransaction(); // Limpar mesmo com erro
-            const errorMessage = error instanceof Error ? error.message : String(error);
+            const errorMessage = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error);
             throw new Error(`Falha no rollback: ${errorMessage}`);
         }
     }
@@ -215,7 +215,7 @@ export class TransactionManager {
                 }
 
                 if (attempt < (this.options.maxRetries || 3)) {
-                    const errorMessage = error instanceof Error ? error.message : String(error);
+                    const errorMessage = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error);
                     console.log(`${operationName} falhou (tentativa ${attempt}). Tentando novamente em ${this.options.retryDelay}ms...`);
                     console.log(`Erro: ${errorMessage}`);
                     await this.sleep(this.options.retryDelay || 1000);
@@ -272,7 +272,7 @@ export class TransactionManager {
                 });
 
             } catch (error: unknown) {
-                const errorMessage = error instanceof Error ? error.message : String(error);
+                const errorMessage = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error);
                 const errorResult = {
                     index: i,
                     name: operationName,
@@ -362,7 +362,7 @@ export class TransactionManager {
             'ORA-30006', // Resource busy; acquire with NOWAIT specified
         ];
 
-        return retryableErrors.some(code => error.message?.includes(code));
+        return retryableErrors.some(code => error instanceof Error ? error.message : String(error)?.includes(code));
     }
 
     /**
