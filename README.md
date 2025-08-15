@@ -420,7 +420,7 @@ Se este projeto te ajudou, considere fazer uma contribuição via **PIX** para a
 
 ### Chave PIX
 
-![QR Code da chave PIX](https://us-prod.asyncgw.teams.microsoft.com/v1/objects/0-brs-d4-96ba8589fcb74c52745a2aab5fd02a2b/views/original/generated_image.png)
+![QR Code PIX](image/README/qrcode-pix-jonatas.mei@outlook.com.png)
 
 👨💻 Desenvolvedor: Jônatas Meireles Sousa Vieira
 
