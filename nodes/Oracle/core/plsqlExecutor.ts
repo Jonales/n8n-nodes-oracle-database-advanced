@@ -108,7 +108,7 @@ export class PLSQLExecutor {
                 compilationErrors: []
             };
 
-        } catch (error) {
+        } catch (error: unknown) {
             const executionTime = Date.now() - startTime;
             
             // Verificar se é erro de compilação
@@ -119,7 +119,7 @@ export class PLSQLExecutor {
                 executionTime,
                 outBinds: {},
                 implicitResults: [],
-                warnings: [error.message],
+                warnings: [error instanceof Error ? error.message : String(error)],
                 compilationErrors
             };
         }
@@ -218,20 +218,20 @@ export class PLSQLExecutor {
                     break;
                 }
 
-            } catch (error) {
+            } catch (error: unknown) {
                 const errorResult: PLSQLExecutionResult = {
                     success: false,
                     executionTime: 0,
                     outBinds: {},
                     implicitResults: [],
-                    warnings: [error.message],
+                    warnings: [error instanceof Error ? error.message : String(error)],
                     compilationErrors: []
                 };
 
                 results.push(errorResult);
 
                 if (stopOnError) {
-                    console.error(`Erro no bloco ${i + 1}: ${error.message}`);
+                    console.error(`Erro no bloco ${i + 1}: ${error instanceof Error ? error.message : String(error)}`);
                     break;
                 }
             }
