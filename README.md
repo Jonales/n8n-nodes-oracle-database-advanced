@@ -429,16 +429,19 @@ Contribuições são **muito bem-vindas**! Este é um projeto open source e sua 
 
 Se este projeto te ajudou, considere fazer uma contribuição via **PIX** para apoiar seu desenvolvimento contínuo:
 
-```
+
+<div align="center">
+
+### Chave PIX
+
+![QR Code PIX](image/README/qrcode-pix-jonatas.mei@outlook.com.png)
 
 🔑 Chave PIX: jonatas.mei@outlook.com
 
-### Chave PIX
-![QR Code PIX](image/README/qrcode-pix-jonatas.mei@outlook.com.png)
-
 👨💻 Desenvolvedor: Jônatas Meireles Sousa Vieira
 
-```
+</div>
+
 
 **Por que contribuir financeiramente?**
 - ⏰ **Mais tempo** dedicado ao desenvolvimento de novas features
