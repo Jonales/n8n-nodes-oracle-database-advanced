@@ -1,4 +1,4 @@
-import { IExecuteFunctions } from "n8n-core";
+import { IExecuteFunctions } from "n8n-workflow";
 
 import {
     IDataObject,
@@ -202,13 +202,13 @@ export class OracleDatabase implements INodeType {
                 result.rows as unknown as IDataObject[]
             );
 
-        } catch (error) {
-            throw new NodeOperationError(this.getNode(), `Oracle Database Error: ${error.message}`);
+        } catch (error: unknown) {
+            throw new NodeOperationError(this.getNode(), `Oracle Database Error: ${error instanceof Error ? error.message : String(error)}`);
         } finally {
             if (connection) {
                 try {
                     await connection.close();
-                } catch (error) {
+                } catch (error: unknown) {
                     console.error(`OracleDB: Failed to close the database connection: ${error}`);
                 }
             }
