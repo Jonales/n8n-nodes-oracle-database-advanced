@@ -1,17 +1,24 @@
 import oracledb from "oracledb";
-type Pool = ReturnType<typeof oracledb.createPool> extends Promise<infer T> ? T : never;
 import { OracleCredentials } from "../types/oracle.credentials.type";
 
-export interface PoolConfig extends PoolAttributes {
-    minConnections?: number;
-    maxConnections?: number;
-    connectionTimeout?: number;
-    idleTimeout?: number;
+// Definição de tipo mais robusta para o Pool
+type Pool = Awaited<ReturnType<typeof oracledb.createPool>>;
+
+export interface PoolConfig {
+    poolMin?: number;
+    poolMax?: number;
+    poolIncrement?: number;
+    poolTimeout?: number;
+    stmtCacheSize?: number;
+    queueMax?: number;
+    queueTimeout?: number;
+    poolPingInterval?: number;
     enableStatistics?: boolean;
+    homogeneous?: boolean;
 }
 
 export class OracleConnectionPool {
-    private static pools: Map<string, ConnectionPool> = new Map();
+    private static pools: Map<string, Pool> = new Map<string, Pool>();
     private static defaultConfig: PoolConfig = {
         poolMin: 2,
         poolMax: 20,
@@ -31,18 +38,25 @@ export class OracleConnectionPool {
     static async getPool(
         credentials: OracleCredentials, 
         config: Partial<PoolConfig> = {}
-    ): Promise<ConnectionPool> {
+    ): Promise<Pool> {
         const poolKey = this.generatePoolKey(credentials);
         
-        if (!this.pools.has(poolKey)) {
-            const pool = await this.createPool(credentials, config);
-            this.pools.set(poolKey, pool);
-            
-            // Configurar eventos do pool
-            this.setupPoolEvents(pool, poolKey);
+        // Verificar se pool já existe
+        const existingPool = this.pools.get(poolKey);
+        if (existingPool) {
+            return existingPool;
         }
+
+        // Criar novo pool se não existir
+        const newPool: Pool = await this.createPool(credentials, config);
         
-        return this.pools.get(poolKey)!;
+        // Armazenar pool no Map (correção do erro TS2322)
+        this.pools.set(poolKey, newPool);
+        
+        // Configurar eventos do pool
+        this.setupPoolEvents(newPool, poolKey);
+        
+        return newPool;
     }
 
     /**
@@ -51,7 +65,7 @@ export class OracleConnectionPool {
     private static async createPool(
         credentials: OracleCredentials,
         userConfig: Partial<PoolConfig>
-    ): Promise<ConnectionPool> {
+    ): Promise<Pool> {
         const poolConfig = {
             ...this.defaultConfig,
             ...userConfig,
@@ -61,30 +75,34 @@ export class OracleConnectionPool {
         };
 
         try {
-            const pool = await oracledb.createPool(poolConfig);
+            const pool: Pool = await oracledb.createPool(poolConfig);
             console.log(`Oracle Pool criado para ${credentials.user}@${credentials.connectionString}`);
             return pool;
-        } catch (error) {
-            throw new Error(`Falha ao criar pool de conexões: ${error.message}`);
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            throw new Error(`Falha ao criar pool de conexões: ${errorMessage}`);
         }
     }
 
     /**
      * Configurar eventos do pool para monitoramento
      */
-    private static setupPoolEvents(pool: ConnectionPool, poolKey: string): void {
-        // Eventos disponíveis no oracledb 6.x
-        pool.on?.('connectionRequest', () => {
-            console.log(`Pool ${poolKey}: Solicitação de conexão`);
-        });
+    private static setupPoolEvents(pool: Pool, poolKey: string): void {
+        const poolAny = pool as any;
+        if (poolAny && typeof poolAny.on === 'function') {
+            // Eventos disponíveis no oracledb 6.x
+            poolAny.on('connectionRequest', () => {
+                console.log(`Pool ${poolKey}: Solicitação de conexão`);
+            });
 
-        pool.on?.('connectionCreated', () => {
-            console.log(`Pool ${poolKey}: Nova conexão criada`);
-        });
+            poolAny.on('connectionCreated', () => {
+                console.log(`Pool ${poolKey}: Nova conexão criada`);
+            });
 
-        pool.on?.('connectionDestroyed', () => {
-            console.log(`Pool ${poolKey}: Conexão destruída`);
-        });
+            poolAny.on('connectionDestroyed', () => {
+                console.log(`Pool ${poolKey}: Conexão destruída`);
+            });
+        }
     }
 
     /**
@@ -98,16 +116,17 @@ export class OracleConnectionPool {
             throw new Error(`Pool não encontrado para ${poolKey}`);
         }
 
+        const poolAny = pool as any;
         return {
-            poolAlias: pool.poolAlias,
-            poolMin: pool.poolMin,
-            poolMax: pool.poolMax,
-            poolIncrement: pool.poolIncrement,
-            poolTimeout: pool.poolTimeout,
-            connectionsOpen: pool.connectionsOpen,
-            connectionsInUse: pool.connectionsInUse,
-            queueLength: pool.queueLength || 0,
-            stmtCacheSize: pool.stmtCacheSize
+            poolAlias: poolAny.poolAlias,
+            poolMin: poolAny.poolMin,
+            poolMax: poolAny.poolMax,
+            poolIncrement: poolAny.poolIncrement,
+            poolTimeout: poolAny.poolTimeout,
+            connectionsOpen: poolAny.connectionsOpen,
+            connectionsInUse: poolAny.connectionsInUse,
+            queueLength: poolAny.queueLength || 0,
+            stmtCacheSize: poolAny.stmtCacheSize
         };
     }
 
@@ -120,11 +139,12 @@ export class OracleConnectionPool {
         
         if (pool) {
             try {
-                await pool.close(10); // 10 segundos timeout
+                await (pool as any).close(10); // 10 segundos timeout
                 this.pools.delete(poolKey);
                 console.log(`Pool ${poolKey} fechado com sucesso`);
-            } catch (error) {
-                console.error(`Erro ao fechar pool ${poolKey}:`, error);
+            } catch (error: unknown) {
+                const errorMessage = error instanceof Error ? error.message : String(error);
+                console.error(`Erro ao fechar pool ${poolKey}:`, errorMessage);
             }
         }
     }
@@ -135,10 +155,11 @@ export class OracleConnectionPool {
     static async closeAllPools(): Promise<void> {
         const closePromises = Array.from(this.pools.entries()).map(async ([key, pool]) => {
             try {
-                await pool.close(10);
+                await (pool as any).close(10);
                 console.log(`Pool ${key} fechado`);
-            } catch (error) {
-                console.error(`Erro ao fechar pool ${key}:`, error);
+            } catch (error: unknown) {
+                const errorMessage = error instanceof Error ? error.message : String(error);
+                console.error(`Erro ao fechar pool ${key}:`, errorMessage);
             }
         });
 
