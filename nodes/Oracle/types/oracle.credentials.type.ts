@@ -1,5 +1,5 @@
 export type OracleCredentials = {
-    user: string;
-    password: string;
-    connectionString: string;
+  user: string;
+  password: string;
+  connectionString: string;
 };

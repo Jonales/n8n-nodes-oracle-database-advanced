@@ -1,8 +1,13 @@
 # n8n-nodes-oracle-database-advanced
+![LOGOTIPO](image/README/oracle-n8n.png)
+
+[![npm version](https://img.shields.io/npm/v/@jonales/n8n-nodes-oracle-database-advanced.svg)](https://www.npmjs.com/package/@jonales/n8n-nodes-oracle-database-advanced)
+[![npm downloads](https://img.shields.io/npm/dt/@jonales/n8n-nodes-oracle-database-advanced.svg)](https://www.npmjs.com/package/@jonales/n8n-nodes-oracle-database-advanced)
+
 
 [Oracle Database](https://docs.oracle.com/en/database/oracle/oracle-database/) node avançado para **n8n**, com **recursos empresariais para cargas pesadas e Oracle 19c+**.
 
-> **🚀 Versão 2.0.0 - Revolucionário**  
+> **🚀 Versão 3.0.0 - Revolucionário**  
 > Este pacote **não requer** instalação manual do **Oracle Instant Client** ou Oracle CLI.  
 > Todo o cliente necessário está embutido através do thin mode do `oracledb` 6.x, funcionando de forma transparente em **Windows, Linux, macOS, Docker e ambientes serverless**, sem configuração adicional.
 
@@ -248,9 +253,9 @@ Message Priority: 1
 - ✅ **CI/CD** (GitHub Actions, GitLab CI, Jenkins)
 
 ### **Versões Node.js**
-- ✅ **Node.js 14.x** (mínimo)
-- ✅ **Node.js 16.x, 18.x** (recomendado)
-- ✅ **Node.js 20.x, 21.x** (mais recentes)
+- ✅ **Node.js 18.x** (mínimo)
+- ✅ **Node.js 20.x, 22.x** (recomendado)
+- ✅ **Node.js 23.x** (mais recente)
 
 ---
 
@@ -378,12 +383,22 @@ npm unlink n8n-nodes-oracle-database-advanced
 ### **Scripts disponíveis**
 ```
 
-npm run build        \# Compilar TypeScript + copiar ícones
-npm run dev          \# Modo watch para desenvolvimento
-npm run lint         \# Verificar código com TSLint
-npm run format       \# Formatar código com Prettier
-npm test             \# Executar testes automatizados
-npm test:watch       \# Testes em modo watch
+npm run clean              \# Limpar dist e cache
+npm run build              \# Compilar TypeScript + copiar ícones
+npm run build:watch        \# Build em modo watch
+npm run build:assets       \# Copiar apenas assets (ícones)
+npm run dev                \# Modo desenvolvimento (watch)
+npm run lint               \# Verificar código com ESLint
+npm run lint:fix           \# Corrigir problemas ESLint automaticamente
+npm run format             \# Formatar código com Prettier
+npm run format:check       \# Verificar formatação sem alterar
+npm run type-check         \# Verificar tipos TypeScript
+npm test                   \# Executar testes automatizados
+npm test:watch             \# Testes em modo watch
+npm test:coverage          \# Testes com relatório de cobertura
+npm run validate           \# Executar type-check + lint + test
+npm run prepublishOnly     \# Verificações antes de publicar
+npm run release            \# Publicar com semantic-release
 
 ```
 
@@ -419,11 +434,9 @@ Se este projeto te ajudou, considere fazer uma contribuição via **PIX** para a
 🔑 Chave PIX: jonatas.mei@outlook.com
 
 ### Chave PIX
-
 ![QR Code PIX](image/README/qrcode-pix-jonatas.mei@outlook.com.png)
 
 👨💻 Desenvolvedor: Jônatas Meireles Sousa Vieira
-
 
 ```
 
@@ -453,13 +466,17 @@ Toda contribuição, por menor que seja, faz diferença e é muito apreciada! �
 ```
 
 {
-"typescript": "~5.3.3",           // TypeScript compiler
-"n8n-workflow": "^1.40.0",       // n8n workflow types
-"n8n-core": "^1.31.0",           // n8n core types
-"@types/oracledb": "^6.3.0",     // Oracle DB type definitions
-"jest": "^29.7.0",               // Testing framework
-"prettier": "^3.2.5",            // Code formatter
-"tslint": "^6.1.3"               // Code linter
+"typescript": "^5.7.2",                      // TypeScript compiler
+"eslint": "^9.16.0",                         // Code linter
+"prettier": "^3.3.3",                       // Code formatter
+"n8n-workflow": "^1.105.0",                 // n8n workflow types
+"@typescript-eslint/eslint-plugin": "^8.15.0", // TypeScript ESLint rules
+"@typescript-eslint/parser": "^8.15.0",     // TypeScript ESLint parser
+"jest": "^29.7.0",                          // Testing framework
+"gulp": "^5.0.0",                           // Build automation
+"husky": "^9.1.7",                          // Git hooks
+"lint-staged": "^15.2.10",                  // Staged files linting
+"semantic-release": "^24.2.0"               // Automated releases
 }
 
 ```
@@ -468,7 +485,7 @@ Toda contribuição, por menor que seja, faz diferença e é muito apreciada! �
 
 ## 📄 Licença
 
-Este projeto está licenciado sob a **Licença MIT** - veja o arquivo [LICENSE](LICENSE) para detalhes.
+Este projeto está licenciado sob a **Licença MIT** - veja o arquivo [LICENSE.md](LICENSE.md) para detalhes.
 
 ```
 

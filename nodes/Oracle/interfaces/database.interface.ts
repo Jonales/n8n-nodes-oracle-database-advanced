@@ -1,5 +1,5 @@
-import { Connection } from "oracledb";
+import { Connection } from 'oracledb';
 
 export interface DatabaseConnection {
-    getConnection(): Promise<Connection>;
+  getConnection(): Promise<Connection>;
 }

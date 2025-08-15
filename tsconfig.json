@@ -1,42 +1,39 @@
 {
-    "$schema": "http://json.schemastore.org/tsconfig",
-    "compilerOptions": {
-        "lib": [
-            "es2017",
-            "es2019",
-            "es2020"
-        ],
-        "types": [
-            "node"
-        ],
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "target": "es2019",
-        "strict": true,
-        "noImplicitAny": true,
-        "strictNullChecks": true,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "resolveJsonModule": true,
-        "declaration": true,
-        "outDir": "./dist/",
-        "sourceMap": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "skipLibCheck": true,
-        "useUnknownInCatchVariables": true,
-        "forceConsistentCasingInFileNames": true,
-        "allowJs": false,
-        "checkJs": false
-    },
-    "include": [
-        "credentials/**/*",
-        "nodes/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist",
-        "**/*.test.ts",
-        "**/*.spec.ts"
-    ]
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "n8n-oracle-advanced-base",
+
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    "outDir": "./dist",
+    "rootDir": ".",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "removeComments": true,
+    "incremental": true,
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "noEmitOnError": true,
+
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "exactOptionalPropertyTypes": false,
+    "noUncheckedIndexedAccess": false,
+    "useUnknownInCatchVariables": true,
+
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node", "jest"]
+  },
+
+  "include": ["credentials/**/*", "nodes/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }
