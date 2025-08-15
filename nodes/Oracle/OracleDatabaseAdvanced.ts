@@ -1,10 +1,9 @@
-import { NodeOperationError } from 'n8n-workflow';
+import { NodeOperationError, IExecuteFunctions } from 'n8n-workflow';
 import {
     IDataObject,
-    IExecuteFunctions,
     INodeExecutionData,
     INodeType,
-    INodeTypeDescription,
+    INodeTypeDescription
 } from 'n8n-workflow';
 
 import oracledb, { Connection } from 'oracledb';
