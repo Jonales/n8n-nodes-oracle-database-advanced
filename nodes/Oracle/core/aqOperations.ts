@@ -127,15 +127,15 @@ export class AQOperations {
 
             return {
                 success: true,
-                messageId: result.outBinds?.message_id as string,
-                enqueueTime: result.outBinds?.enqueue_time as Date,
+                messageId: (result.outBinds as { [key: string]: any } | undefined)?.message_id as string,
+                enqueueTime: (result.outBinds as { [key: string]: any } | undefined)?.enqueue_time as Date,
                 correlationId: message.correlationId
             };
 
-        } catch (error) {
+        } catch (error: unknown) {
             return {
                 success: false,
-                error: `Erro ao enfileirar mensagem: ${error.message}`
+                error: `Erro ao enfileirar mensagem: ${error instanceof Error ? error.message : String(error)}`
             };
         }
     }
@@ -238,10 +238,10 @@ export class AQOperations {
                 };
             }
 
-        } catch (error) {
+        } catch (error: unknown) {
             return {
                 success: false,
-                error: `Erro ao desenfileirar mensagem: ${error.message}`
+                error: `Erro ao desenfileirar mensagem: ${error instanceof Error ? error.message : String(error)}`
             };
         }
     }
@@ -334,8 +334,8 @@ export class AQOperations {
             } else {
                 throw new Error(`Fila '${queueName}' não encontrada`);
             }
-        } catch (error) {
-            throw new Error(`Erro ao obter informações da fila: ${error.message}`);
+        } catch (error: unknown) {
+            throw new Error(`Erro ao obter informações da fila: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 
@@ -372,14 +372,14 @@ export class AQOperations {
 
             const result = await this.connection.execute(plsqlBlock, binds);
             
-            if (result.outBinds?.result === 'Success') {
+            if ((result.outBinds as { [key: string]: any } | undefined)?.result === 'Success') {
                 return { purgedCount: -1 }; // Oracle não retorna count específico
             } else {
-                throw new Error(result.outBinds?.result as string);
+                throw new Error((result.outBinds as { [key: string]: any } | undefined)?.result as string);
             }
 
-        } catch (error) {
-            throw new Error(`Erro ao purgar fila: ${error.message}`);
+        } catch (error: unknown) {
+            throw new Error(`Erro ao purgar fila: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 
@@ -451,10 +451,10 @@ export class AQOperations {
             };
 
             const result = await this.connection.execute(plsqlBlock, binds);
-            return result.outBinds?.result === 'SUCCESS';
+            return (result.outBinds as { [key: string]: any } | undefined)?.result === 'SUCCESS';
 
-        } catch (error) {
-            throw new Error(`Erro ao criar fila: ${error.message}`);
+        } catch (error: unknown) {
+            throw new Error(`Erro ao criar fila: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 
