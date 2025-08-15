@@ -99,13 +99,13 @@ export class BulkOperations {
                 });
 
                 if (result.batchErrors && result.batchErrors.length > 0) {
-                    // Processar erros específicos de cada linha
+                    // Processar erros específicos de cada linha (CORRIGIDO)
                     for (const batchError of result.batchErrors) {
                         errors.push({
                             batchIndex: batchCount - 1,
-                            rowIndex: i + batchError.offset,
-                            error: batchError.error instanceof Error ? error.message : String(error),
-                            data: batch[batchError.offset]
+                            rowIndex: i + (batchError.offset ?? 0), // ✅ Correção TS18048
+                            error: (batchError as any).error?.message || 'Unknown batch error', // ✅ Correção TS2339/TS2552
+                            data: batch[batchError.offset ?? 0] // ✅ Correção TS2538
                         });
                         totalErrors++;
                     }
@@ -155,7 +155,7 @@ export class BulkOperations {
     }
 
     /**
-     * Atualização em massa (Bulk Update)
+     * Atualização em massa (Bulk Update) - CORRIGIDO
      */
     async bulkUpdate(
         tableName: string,
@@ -217,9 +217,9 @@ export class BulkOperations {
                     for (const batchError of result.batchErrors) {
                         errors.push({
                             batchIndex: batchCount - 1,
-                            rowIndex: i + batchError.offset,
-                            error: batchError.error instanceof Error ? error.message : String(error),
-                            data: batch[batchError.offset]
+                            rowIndex: i + (batchError.offset ?? 0), // ✅ Correção TS18048
+                            error: (batchError as any).error?.message || 'Unknown batch error', // ✅ Correção TS2339/TS2552
+                            data: batch[batchError.offset ?? 0] // ✅ Correção TS2538
                         });
                         totalErrors++;
                     }
@@ -267,7 +267,7 @@ export class BulkOperations {
     }
 
     /**
-     * Exclusão em massa (Bulk Delete)
+     * Exclusão em massa (Bulk Delete) - CORRIGIDO
      */
     async bulkDelete(
         tableName: string,
@@ -318,9 +318,9 @@ export class BulkOperations {
                     for (const batchError of result.batchErrors) {
                         errors.push({
                             batchIndex: batchCount - 1,
-                            rowIndex: i + batchError.offset,
-                            error: batchError.error instanceof Error ? error.message : String(error),
-                            data: batch[batchError.offset]
+                            rowIndex: i + (batchError.offset ?? 0), // ✅ Correção TS18048
+                            error: (batchError as any).error?.message || 'Unknown batch error', // ✅ Correção TS2339/TS2552
+                            data: batch[batchError.offset ?? 0] // ✅ Correção TS2538
                         });
                         totalErrors++;
                     }
