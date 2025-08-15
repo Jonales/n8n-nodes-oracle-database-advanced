@@ -301,4 +301,3 @@ export class OracleDatabaseAdvanced implements INodeType {
         return bindParameters;
     }
 }
-export { OracleDatabaseAdvanced as nodeClass };
