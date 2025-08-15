@@ -451,23 +451,23 @@ export class PLSQLExecutor {
     /**
      * Mapear tipos Oracle para tipos oracledb
      */
-    private getOracleType(dataType: string): number {
-        const typeMap: { [key: string]: number } = {
-            'VARCHAR2': oracledb.STRING,
-            'CHAR': oracledb.STRING,
-            'NVARCHAR2': oracledb.STRING,
-            'NCHAR': oracledb.STRING,
-            'NUMBER': oracledb.NUMBER,
-            'BINARY_INTEGER': oracledb.NUMBER,
-            'PLS_INTEGER': oracledb.NUMBER,
-            'DATE': oracledb.DATE,
-            'TIMESTAMP': oracledb.DATE,
-            'CLOB': oracledb.CLOB,
-            'BLOB': oracledb.BLOB,
-            'CURSOR': oracledb.CURSOR
-        };
+    private typeMap: { [key: string]: any } = {
+        VARCHAR2: oracledb.STRING,
+        CHAR: oracledb.STRING,
+        'NVARCHAR2': oracledb.STRING,
+        'NCHAR': oracledb.STRING,
+        NUMBER: oracledb.NUMBER,
+        BINARY_INTEGER: oracledb.NUMBER,
+        PLS_INTEGER: oracledb.NUMBER,
+        DATE: oracledb.DATE,
+        TIMESTAMP: oracledb.DATE,
+        CLOB: oracledb.CLOB,
+        BLOB: oracledb.BLOB,
+        CURSOR: oracledb.CURSOR,
+    };
 
-        return typeMap[dataType.toUpperCase()] || oracledb.STRING;
+    private getOracleType(dataType: string): any {
+        return this.typeMap[dataType.toUpperCase()] || oracledb.STRING;  
     }
 
     /**
