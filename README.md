@@ -469,17 +469,32 @@ Toda contribuição, por menor que seja, faz diferença e é muito apreciada! �
 ```
 
 {
-"typescript": "^5.7.2",                      // TypeScript compiler
-"eslint": "^9.16.0",                         // Code linter
-"prettier": "^3.3.3",                       // Code formatter
-"n8n-workflow": "^1.105.0",                 // n8n workflow types
-"@typescript-eslint/eslint-plugin": "^8.15.0", // TypeScript ESLint rules
-"@typescript-eslint/parser": "^8.15.0",     // TypeScript ESLint parser
-"jest": "^29.7.0",                          // Testing framework
-"gulp": "^5.0.0",                           // Build automation
-"husky": "^9.1.7",                          // Git hooks
-"lint-staged": "^15.2.10",                  // Staged files linting
-"semantic-release": "^24.2.0"               // Automated releases
+  "typescript": "^5.7.2",                           // TypeScript compiler
+  "eslint": "^9.33.0",                              // Code linter
+  "prettier": "^3.3.3",                             // Code formatter
+  "@eslint/js": "^9.33.0",                          // ESLint flat config support
+  "@typescript-eslint/eslint-plugin": "^8.39.1",    // TypeScript ESLint rules
+  "@typescript-eslint/parser": "^8.39.1",           // TypeScript ESLint parser
+  "eslint-config-prettier": "^9.1.0",               // Turns off ESLint rules that conflict with Prettier
+  "eslint-plugin-prettier": "^5.2.1",               // Runs Prettier as an ESLint rule
+  "eslint-plugin-import": "^2.31.0",                // Linting for ES6+ import/export syntax
+  "eslint-plugin-n8n-nodes-base": "^1.16.3",        // ESLint rules for n8n community nodes
+  "prettier-plugin-organize-imports": "^3.2.4",     // Organize imports automatically
+  "jest": "^29.7.0",                                // Testing framework
+  "ts-jest": "^29.2.5",                             // Jest transformer for TypeScript
+  "@types/jest": "^29.5.14",                        // TypeScript types for Jest
+  "gulp": "^5.0.0",                                 // Build automation
+  "del": "^7.1.0",                                  // File deletion for gulp tasks
+  "rimraf": "^6.0.1",                               // Cross-platform `rm -rf`
+  "husky": "^9.1.7",                                // Git hooks
+  "lint-staged": "^15.2.10",                        // Run linters on staged git files
+  "semantic-release": "^24.2.0",                    // Automated releases
+  "@semantic-release/changelog": "^6.0.3",          // Plugin for changelog generation
+  "@semantic-release/git": "^10.0.1",               // Commit version updates
+  "@semantic-release/github": "^10.3.5",            // GitHub releases integration
+  "@semantic-release/npm": "^12.0.1",               // Publishes to npm
+  "@types/node": "^22.10.1",                        // TypeScript types for Node.js
+  "n8n-workflow": "^1.82.0"                         // Types used in n8n custom nodes
 }
 
 ```
