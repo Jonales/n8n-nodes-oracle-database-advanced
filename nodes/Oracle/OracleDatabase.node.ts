@@ -9,7 +9,7 @@ import {
 } from "n8n-workflow";
 
 import oracledb from "oracledb";
-import { OracleConnection } from "./core/connection";
+import { OracleConnection } from "./connection";
 
 export class OracleDatabase implements INodeType {
     description: INodeTypeDescription = {
@@ -147,9 +147,9 @@ export class OracleDatabase implements INodeType {
                 // Set data type to be correct type
                 let datatype: number | string | undefined = undefined;
                 if (item.datatype && item.datatype === 'number') {
-                    datatype = oracledb.NUMBER;
+                    datatype = oracledb.NUMBER as any;
                 } else {
-                    datatype = oracledb.STRING;
+                    datatype = oracledb.STRING as any;
                 }
 
                 if (!item.parseInStatement) {
