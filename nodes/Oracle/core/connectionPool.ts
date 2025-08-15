@@ -1,7 +1,7 @@
 import oracledb from "oracledb";
 import { OracleCredentials } from "../types/oracle.credentials.type";
 
-// Definição de tipo mais robusta para o Pool
+// DefiniÃ§Ã£o de tipo mais robusta para o Pool
 type Pool = Awaited<ReturnType<typeof oracledb.createPool>>;
 
 export interface PoolConfig {
@@ -33,7 +33,7 @@ export class OracleConnectionPool {
     };
 
     /**
-     * Obter ou criar pool de conexões
+     * Obter ou criar pool de conexÃµes
      */
     static async getPool(
         credentials: OracleCredentials, 
@@ -41,16 +41,16 @@ export class OracleConnectionPool {
     ): Promise<Pool> {
         const poolKey = this.generatePoolKey(credentials);
         
-        // Verificar se pool já existe
+        // Verificar se pool jÃ¡ existe
         const existingPool = this.pools.get(poolKey);
         if (existingPool) {
             return existingPool;
         }
 
-        // Criar novo pool se não existir
+        // Criar novo pool se nÃ£o existir
         const newPool: Pool = await this.createPool(credentials, config);
         
-        // Armazenar pool no Map (correção do erro TS2322)
+        // Armazenar pool no Map (correÃ§Ã£o do erro TS2322)
         this.pools.set(poolKey, newPool);
         
         // Configurar eventos do pool
@@ -60,7 +60,7 @@ export class OracleConnectionPool {
     }
 
     /**
-     * Criar novo pool de conexões
+     * Criar novo pool de conexÃµes
      */
     private static async createPool(
         credentials: OracleCredentials,
@@ -80,7 +80,7 @@ export class OracleConnectionPool {
             return pool;
         } catch (error: unknown) {
             const errorMessage = error instanceof Error ? error.message : String(error);
-            throw new Error(`Falha ao criar pool de conexões: ${errorMessage}`);
+            throw new Error(`Falha ao criar pool de conexÃµes: ${errorMessage}`);
         }
     }
 
@@ -90,30 +90,30 @@ export class OracleConnectionPool {
     private static setupPoolEvents(pool: Pool, poolKey: string): void {
         const poolAny = pool as any;
         if (poolAny && typeof poolAny.on === 'function') {
-            // Eventos disponíveis no oracledb 6.x
+            // Eventos disponÃ­veis no oracledb 6.x
             poolAny.on('connectionRequest', () => {
-                console.log(`Pool ${poolKey}: Solicitação de conexão`);
+                console.log(`Pool ${poolKey}: SolicitaÃ§Ã£o de conexÃ£o`);
             });
 
             poolAny.on('connectionCreated', () => {
-                console.log(`Pool ${poolKey}: Nova conexão criada`);
+                console.log(`Pool ${poolKey}: Nova conexÃ£o criada`);
             });
 
             poolAny.on('connectionDestroyed', () => {
-                console.log(`Pool ${poolKey}: Conexão destruída`);
+                console.log(`Pool ${poolKey}: ConexÃ£o destruÃ­da`);
             });
         }
     }
 
     /**
-     * Obter estatísticas do pool
+     * Obter estatÃ­sticas do pool
      */
     static async getPoolStatistics(credentials: OracleCredentials): Promise<any> {
         const poolKey = this.generatePoolKey(credentials);
         const pool = this.pools.get(poolKey);
         
         if (!pool) {
-            throw new Error(`Pool não encontrado para ${poolKey}`);
+            throw new Error(`Pool nÃ£o encontrado para ${poolKey}`);
         }
 
         const poolAny = pool as any;
@@ -131,7 +131,7 @@ export class OracleConnectionPool {
     }
 
     /**
-     * Fechar pool específico
+     * Fechar pool especÃ­fico
      */
     static async closePool(credentials: OracleCredentials): Promise<void> {
         const poolKey = this.generatePoolKey(credentials);
@@ -169,7 +169,7 @@ export class OracleConnectionPool {
     }
 
     /**
-     * Gerar chave única para o pool baseada nas credenciais
+     * Gerar chave Ãºnica para o pool baseada nas credenciais
      */
     private static generatePoolKey(credentials: OracleCredentials): string {
         const { user, connectionString } = credentials;
@@ -177,7 +177,7 @@ export class OracleConnectionPool {
     }
 
     /**
-     * Configurar pool customizado para cargas específicas
+     * Configurar pool customizado para cargas especÃ­ficas
      */
     static getHighVolumeConfig(): PoolConfig {
         return {
@@ -194,7 +194,7 @@ export class OracleConnectionPool {
     }
 
     /**
-     * Configurar pool para operações OLTP (muitas transações pequenas)
+     * Configurar pool para operaÃ§Ãµes OLTP (muitas transaÃ§Ãµes pequenas)
      */
     static getOLTPConfig(): PoolConfig {
         return {
@@ -211,7 +211,7 @@ export class OracleConnectionPool {
     }
 
     /**
-     * Configurar pool para operações analíticas (queries longas)
+     * Configurar pool para operaÃ§Ãµes analÃ­ticas (queries longas)
      */
     static getAnalyticsConfig(): PoolConfig {
         return {
@@ -229,7 +229,7 @@ export class OracleConnectionPool {
 }
 
 /**
- * Cleanup automático dos pools ao encerrar o processo
+ * Cleanup automÃ¡tico dos pools ao encerrar o processo
  */
 process.on('SIGINT', async () => {
     console.log('Encerrando pools Oracle...');
