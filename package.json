@@ -64,7 +64,7 @@
   ],
   "packageManager": "npm@10.8.2",
   "scripts": {
-    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "clean": "npx rimraf dist tsconfig.tsbuildinfo",
     "prebuild": "npm run clean",
     "build": "tsc -p tsconfig.json && gulp build:complete",
     "build:watch": "tsc -p tsconfig.json --watch",
