@@ -42,6 +42,8 @@
   },
   "files": [
     "dist",
+    "index.js",
+    "index.d.ts",
     "README.md",
     "LICENSE.md",
     "CHANGELOG.md"
@@ -77,7 +79,7 @@
     "test:watch": "jest --watch --passWithNoTests",
     "test:coverage": "jest --coverage --passWithNoTests",
     "prepublishOnly": "npm run clean && npm run build && npm run lint && npm run test",
-    "prepare": "husky install",
+    "prepare": "husky",
     "release": "semantic-release",
     "validate": "npm run type-check && npm run lint && npm run test",
     "dev:assets": "gulp watch",
