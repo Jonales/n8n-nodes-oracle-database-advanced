@@ -46,7 +46,11 @@ function copyAssets() {
  * @returns {Promise<string[]>}
  */
 async function cleanupDist() {
-  const { deleteAsync } = require('del');
+  const deleteAsync = async (...args) => {
+    const del = await import('del');
+    return del.deleteAsync(...args);
+  };
+
 	
   console.log('🧹 Limpando arquivos desnecessários...');
   return deleteAsync([
